@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ABC Descanso · La tienda del descanso en Lorca</title>
+  <meta name="description" content="ABC Descanso, la tienda del descanso en Lorca: colchones, canapés, somieres, almohadas y ropa de cama. Entrega y montaje a domicilio. Calle Nogalte, 7 · 968 47 93 47." />
+  <meta name="theme-color" content="#0E0F10" />
+  <meta name="robots" content="index, follow" />
+  <!-- PENDIENTE: canonical y og:url cuando se confirme el dominio (abcdescanso.es no responde) -->
+
+  <!-- Open Graph (datos reales) -->
+  <meta property="og:type" content="business.business" />
+  <meta property="og:title" content="ABC Descanso · La tienda del descanso" />
+  <meta property="og:description" content="Colchones, canapés, somieres y ropa de cama en Lorca. Calle Nogalte, 7." />
+  <meta property="og:image" content="img/tienda-interior.jpg" />
+  <meta property="og:locale" content="es_ES" />
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "HomeGoodsStore",
+      "name": "ABC Descanso",
+      "alternateName": ["ABC del Descanso", "ABC Colchones Lorca"],
+      "slogan": "La tienda del descanso",
+      "image": "img/logo-abcdescanso.png",
+      "telephone": "+34 968 47 93 47",
+      "email": "abcdeldescansolorca@yahoo.es",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Calle Nogalte, 7",
+        "postalCode": "30800",
+        "addressLocality": "Lorca",
+        "addressRegion": "Murcia",
+        "addressCountry": "ES"
+      },
+      "geo": { "@type": "GeoCoordinates", "latitude": 37.6724681, "longitude": -1.7004246 },
+      "openingHoursSpecification": [
+        { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "10:00", "closes": "13:30" },
+        { "@type": "OpeningHoursSpecification", "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"], "opens": "17:30", "closes": "20:30" },
+        { "@type": "OpeningHoursSpecification", "dayOfWeek": "Saturday", "opens": "10:00", "closes": "13:30" }
+      ],
+      "sameAs": ["https://www.instagram.com/abcdescansolorca/", "https://www.facebook.com/AbcDelDescansoLorca"]
+    }
+  </script>
+
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+
+  <!-- Fuentes alojadas en local -->
+  <link rel="preload" href="fuentes/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="preload" href="fuentes/GeistMono-Variable.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="modulepreload" href="js/three/three.module.min.js" />
+  <link rel="stylesheet" href="estilos.css" />
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "./js/three/three.module.min.js",
+        "three/addons/": "./js/three/addons/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <!-- Fondo: ondas suaves de partículas -->
+  <canvas id="ondas" aria-hidden="true"></canvas>
+
+  <!-- Escena: disco oscuro que asoma por abajo + arcos concéntricos -->
+  <div class="escena" aria-hidden="true">
+    <svg class="arcos" viewBox="0 0 1600 1600" preserveAspectRatio="xMidYMax meet" focusable="false"></svg>
+    <div class="disco"></div>
+    <div class="disco-brillo"></div>
+  </div>
+
+  <!-- Menú en píldora flotante -->
+  <header class="pastilla" role="banner">
+    <a class="marca" href="#portada" aria-label="ABC Descanso, inicio">
+      <img class="marca-nube" src="img/nube.png" alt="" width="400" height="228" />
+      <span class="marca-texto"><b>abc</b><span>descanso</span></span>
+    </a>
+    <a class="cta" href="tel:+34968479347">
+      <span class="cta-punto" aria-hidden="true"></span>
+      Llamar
+    </a>
+  </header>
+
+  <main id="portada">
+    <!-- Portada + despiece: la sección se queda fijada mientras se baja -->
+    <section class="producto" aria-labelledby="titulo-portada">
+      <div class="pin">
+        <canvas id="render" role="img" aria-label="Colchón sobre somier de láminas que se separa en sus capas al bajar"></canvas>
+
+        <div class="portada-texto">
+          <p class="etiqueta"><span class="etiqueta-punto" aria-hidden="true"></span>La tienda del descanso · Lorca</p>
+          <h1 class="nombre" id="titulo-portada">
+            <span class="nombre-abc">ABC</span>
+            <span class="nombre-dd">del Descanso</span>
+          </h1>
+          <p class="frase">Colchones, somieres y complementos de descanso. Calidad para todos los bolsillos, en el centro de Lorca.</p>
+        </div>
+
+        <div class="por-dentro">
+          <p class="etiqueta"><span class="etiqueta-punto" aria-hidden="true"></span>Por dentro</p>
+          <h2 class="por-dentro-titulo">Capa a capa.</h2>
+          <p class="por-dentro-nota">Ilustración orientativa: las capas y los materiales varían según el modelo.</p>
+        </div>
+
+        <ol class="capas-etiquetas">
+          <li data-capa="tejido"><span class="linea" aria-hidden="true"></span><span class="num">01</span><span class="nom">Tejido</span><span class="desc">La capa que tocas: la funda acolchada.</span></li>
+          <li data-capa="acolchado"><span class="linea" aria-hidden="true"></span><span class="num">02</span><span class="nom">Acolchado</span><span class="desc">Capas de confort entre la funda y el núcleo.</span></li>
+          <li data-capa="nucleo"><span class="linea" aria-hidden="true"></span><span class="num">03</span><span class="nom">Núcleo</span><span class="desc">El soporte: muelles o espumas, según el modelo.</span></li>
+          <li data-capa="base"><span class="linea" aria-hidden="true"></span><span class="num">04</span><span class="nom">Base</span><span class="desc">La cara inferior que cierra el colchón.</span></li>
+          <li data-capa="somier"><span class="linea" aria-hidden="true"></span><span class="num">05</span><span class="nom">Somier</span><span class="desc">La base de láminas sobre la que descansa todo.</span></li>
+        </ol>
+
+        <div class="pista" aria-hidden="true">
+          <span class="pista-texto">Desliza</span>
+          <span class="pista-linea"></span>
+        </div>
+      </div>
+    </section>
+
+    <!--
+      Fuentes de los datos (todo real):
+      · CRM de Ocean Digital Services (dirección, teléfono, email, servicios publicados).
+      · Ficha de Google (horario L–V 10:00–13:30 / 17:30–20:30, sáb 10:00–13:30, dom cerrado).
+      · Publicaciones propias de @abcdescansolorca y su página de Facebook (logo, lema, fotos,
+        productos, Karibian Descanso, canapé Koala con mando, montajes en casa).
+      PENDIENTE de confirmar con el propietario: catálogo y marcas vigentes, zonas y condiciones
+      de entrega y montaje, horario de verano, si sigue abierta la tienda de Avenida Europa,
+      precios/ofertas y datos legales (titular, NIF) para aviso legal y privacidad.
+      Opiniones: FUERA. Google 3,4/5 (16 reseñas, mixtas y sin verificar); no se citan reseñas
+      sueltas sin el visto bueno del propietario.
+    -->
+
+    <!-- Manifiesto: el texto se ilumina palabra a palabra al bajar -->
+    <section class="manifiesto" aria-label="Sobre la tienda">
+      <p class="etiqueta"><span class="etiqueta-punto" aria-hidden="true"></span>ABC Descanso</p>
+      <p class="manifiesto-texto" data-revela-palabras>Colchones, canapés, somieres, almohadas y ropa de cama. Lo ves en la tienda y te lo llevamos a casa.</p>
+    </section>
+
+    <!-- Qué encontrarás -->
+    <section class="catalogo" id="productos" aria-labelledby="titulo-catalogo">
+      <header class="cabecera">
+        <p class="etiqueta"><span class="etiqueta-punto" aria-hidden="true"></span>Qué encontrarás</p>
+        <h2 class="titulo" id="titulo-catalogo">De la base<br />a la almohada.</h2>
+      </header>
+      <div class="tarjetas">
+        <article class="tarjeta revela">
+          <figure class="foto"><img src="img/colchon-karibian.jpg" alt="Detalle de un colchón Karibian con tejido acolchado" width="1000" height="1250" loading="lazy" decoding="async" /></figure>
+          <p class="tarjeta-num">01</p>
+          <h3 class="tarjeta-nom">Colchones</h3>
+          <p class="tarjeta-txt">De muelle ensacado o viscoelásticos, entre otros. Trabajamos con Karibian Descanso.</p>
+        </article>
+        <article class="tarjeta revela">
+          <figure class="foto"><img src="img/canape-abatible.jpg" alt="Canapé abatible abierto con el colchón levantado, montado en un dormitorio" width="900" height="900" loading="lazy" decoding="async" /></figure>
+          <p class="tarjeta-num">02</p>
+          <h3 class="tarjeta-nom">Canapés</h3>
+          <p class="tarjeta-txt">Abatibles, para guardar bajo la cama. También con apertura por mando.</p>
+        </article>
+        <article class="tarjeta revela">
+          <figure class="foto"><img src="img/tienda-interior.jpg" alt="Interior de la tienda con colchones expuestos sobre sus bases" width="843" height="632" loading="lazy" decoding="async" /></figure>
+          <p class="tarjeta-num">03</p>
+          <h3 class="tarjeta-nom">Somieres y bases</h3>
+          <p class="tarjeta-txt">La base de tu colchón, también en versión articulada eléctrica.</p>
+        </article>
+        <article class="tarjeta revela">
+          <figure class="foto"><img src="img/ropa-de-cama.jpg" alt="Expositor de ropa de cama con colchas, cojines y el rótulo de ABC Descanso" width="640" height="853" loading="lazy" decoding="async" /></figure>
+          <p class="tarjeta-num">04</p>
+          <h3 class="tarjeta-nom">Almohadas y ropa de cama</h3>
+          <p class="tarjeta-txt">Almohadas, sábanas, colchas bouti, cojines y pijamas.</p>
+        </article>
+      </div>
+    </section>
+
+    <!-- Montajes reales (fotos de su Instagram) -->
+    <section class="montajes" id="montajes" aria-labelledby="titulo-montajes">
+      <div class="montajes-pin">
+        <header class="cabecera montajes-cab">
+          <p class="etiqueta"><span class="etiqueta-punto" aria-hidden="true"></span>En casa de nuestros clientes</p>
+          <h2 class="titulo" id="titulo-montajes">Montados<br />y listos.</h2>
+          <p class="cabecera-txt">Te lo llevamos y lo dejamos montado. Fotos de nuestros montajes.</p>
+        </header>
+        <div class="montajes-pista">
+          <figure class="montaje"><img src="img/canape-koala.jpg" alt="Canapé Koala de 180×190 con colchón Force de Karibian Descanso en un dormitorio" width="792" height="792" loading="lazy" decoding="async" /><figcaption>Canapé Koala 180×190 con colchón Force de Karibian Descanso.</figcaption></figure>
+          <figure class="montaje"><img src="img/colchon-eleva.jpg" alt="Colchón Eleva sobre canapé en un dormitorio" width="900" height="900" loading="lazy" decoding="async" /><figcaption>Colchón Eleva sobre canapé.</figcaption></figure>
+          <figure class="montaje"><img src="img/dormitorio-cabecero.jpg" alt="Dormitorio con colchón sobre canapé y cabecero tallado" width="900" height="900" loading="lazy" decoding="async" /><figcaption>Dormitorio junto a DGALA Interiorismo.</figcaption></figure>
+          <figure class="montaje"><img src="img/colchon-gris.jpg" alt="Colchón gris de acolchado hexagonal sobre canapé de madera" width="900" height="1125" loading="lazy" decoding="async" /><figcaption>Montaje de colchón y canapé.</figcaption></figure>
+          <figure class="montaje"><img src="img/colchon-individual.jpg" alt="Colchón individual montado en un dormitorio" width="900" height="900" loading="lazy" decoding="async" /><figcaption>Colchón individual.</figcaption></figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- Ficha de la tienda: solo datos confirmados -->
+    <section class="ficha" id="ficha" aria-labelledby="titulo-ficha">
+      <header class="cabecera">
+        <p class="etiqueta"><span class="etiqueta-punto" aria-hidden="true"></span>Ficha</p>
+        <h2 class="titulo" id="titulo-ficha">La tienda,<br />en datos.</h2>
+      </header>
+      <dl class="ficha-lista">
+        <div class="ficha-fila revela"><dt>Tienda</dt><dd>ABC Descanso · La tienda del descanso</dd></div>
+        <div class="ficha-fila revela"><dt>Dirección</dt><dd>Calle Nogalte, 7<br />30800 Lorca (Murcia)</dd></div>
+        <div class="ficha-fila revela"><dt>Teléfono</dt><dd><a href="tel:+34968479347">968 47 93 47</a></dd></div>
+        <div class="ficha-fila revela"><dt>Email</dt><dd><a href="mailto:abcdeldescansolorca@yahoo.es">abcdeldescansolorca@yahoo.es</a></dd></div>
+        <div class="ficha-fila revela"><dt>Productos</dt><dd>Colchones · Canapés · Somieres y bases · Almohadas · Ropa de cama</dd></div>
+        <div class="ficha-fila revela"><dt>Marca</dt><dd>Karibian Descanso</dd></div>
+        <div class="ficha-fila revela"><dt>Servicios</dt><dd>Venta en tienda · Entrega a domicilio · Montaje · Recogida en tienda</dd></div>
+        <div class="ficha-fila revela"><dt>Redes</dt><dd><a href="https://www.instagram.com/abcdescansolorca/" rel="noopener" target="_blank">Instagram @abcdescansolorca</a><br /><a href="https://www.facebook.com/AbcDelDescansoLorca" rel="noopener" target="_blank">Facebook · ABC Descanso LORCA</a></dd></div>
+      </dl>
+    </section>
+
+    <!-- Visítanos -->
+    <section class="visita" id="visitanos" aria-labelledby="titulo-visita">
+      <div class="visita-texto">
+        <p class="etiqueta"><span class="etiqueta-punto" aria-hidden="true"></span>Visítanos</p>
+        <h2 class="titulo titulo-grande" id="titulo-visita">Ven a verlo.</h2>
+        <p class="visita-dir">Calle Nogalte, 7 · 30800 Lorca (Murcia)</p>
+        <table class="horario">
+          <caption>Horario</caption>
+          <tbody>
+            <tr><th scope="row">Lunes a viernes</th><td>10:00–13:30 · 17:30–20:30</td></tr>
+            <tr><th scope="row">Sábado</th><td>10:00–13:30</td></tr>
+            <tr><th scope="row">Domingo</th><td>Cerrado</td></tr>
+          </tbody>
+        </table>
+        <p class="visita-nota">En verano el horario puede cambiar: llámanos antes de venir.</p>
+        <div class="botones">
+          <a class="boton boton-principal" href="tel:+34968479347"><span class="cta-punto" aria-hidden="true"></span>Llamar · 968 47 93 47</a>
+          <a class="boton" href="https://www.google.com/maps/dir/?api=1&amp;destination=ABC%20Descanso%2C%20Calle%20Nogalte%207%2C%2030800%20Lorca" rel="noopener" target="_blank">Cómo llegar</a>
+          <a class="boton" href="mailto:abcdeldescansolorca@yahoo.es">Escribir un email</a>
+        </div>
+      </div>
+      <figure class="foto visita-foto revela"><img src="img/tienda-almohadas.jpg" alt="Interior de ABC Descanso con almohadas, ropa de cama y el rótulo de la tienda" width="843" height="360" loading="lazy" decoding="async" /></figure>
+    </section>
+
+    <footer class="pie">
+      <img class="pie-logo" src="img/logo-abcdescanso.png" alt="ABC Descanso, la tienda del descanso" width="592" height="385" loading="lazy" />
+      <p class="pie-datos">Calle Nogalte, 7 · 30800 Lorca (Murcia) · <a href="tel:+34968479347">968 47 93 47</a></p>
+      <p class="pie-datos pie-redes"><a href="https://www.instagram.com/abcdescansolorca/" rel="noopener" target="_blank">Instagram</a> · <a href="https://www.facebook.com/AbcDelDescansoLorca" rel="noopener" target="_blank">Facebook</a></p>
+      <!-- PENDIENTE: enlaces a aviso legal y privacidad cuando el propietario pase titular y NIF -->
+    </footer>
+  </main>
+
+  <script src="js/gsap.min.js"></script>
+  <script src="js/ScrollTrigger.min.js"></script>
+  <script src="app.js"></script>
+  <script type="module" src="render.js"></script>
+</body>
+</html>
