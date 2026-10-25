@@ -108,7 +108,7 @@
         ctx.arc(p.x, y, p.r, 0, Math.PI * 2);
         ctx.fillStyle = p.calido
           ? "rgba(47, 166, 228, " + p.a + ")"
-          : "rgba(236, 233, 227, " + p.a + ")";
+          : "rgba(40, 40, 36, " + p.a + ")";
         ctx.fill();
       }
       if (activo) raf = requestAnimationFrame(pinta);
@@ -211,6 +211,12 @@
           pin: true, scrub: 0.6, invalidateOnRefresh: true, anticipatePin: 1
         }
       });
+    });
+
+    // Al llegar al contenido, el disco, los arcos y las ondas se retiran y queda el fondo limpio
+    gsap.fromTo(document.documentElement, { "--op-salida": 1 }, {
+      "--op-salida": 0, ease: "none",
+      scrollTrigger: { trigger: ".manifiesto", start: "top bottom", end: "top 35%", scrub: true }
     });
 
     // Manifiesto: cada palabra se enciende con el scroll

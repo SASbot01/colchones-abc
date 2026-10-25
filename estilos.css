@@ -1,7 +1,7 @@
 /* ============================================================
    ABC del Descanso · Colchones en Lorca
-   Estética de referencia: iyO One (oscuro, tipográfico, premium)
-   Colores de marca: azul de la nube del logo de ABC Descanso sobre fondo oscuro
+   Estructura de referencia: iyO One (tipográfica, producto despiezado)
+   Color: claro de estudio al estilo Kave Home + azul de la nube del logo de ABC Descanso
    ============================================================ */
 
 @font-face {
@@ -20,18 +20,20 @@
 }
 
 :root {
-  --negro: #0e0f10;      /* fondo, casi negro cálido */
-  --carbon: #17181a;     /* superficies (disco, pastilla) */
-  --carbon-alto: #202123;
-  --hueso: #ece9e3;      /* texto principal / nombre */
-  --niebla: #9a978f;     /* texto secundario */
-  --tenue: #5c5b57;      /* etiquetas, arcos */
+  --negro: #f0efeb;      /* fondo de estudio (gris cálido muy claro, como Kave Home) */
+  --blanco: #ffffff;     /* tarjetas y pie */
+  --crema: #f7f6f4;
+  --carbon: #e6e4de;     /* superficies */
+  --hueso: #141412;      /* texto principal / nombre */
+  --niebla: #53534c;     /* texto secundario (gris oliva) */
+  --tenue: #7a7a71;      /* notas */
+  --boton: #111111;      /* botón principal, negro */
   --azul: #1a86cc;       /* azul de la nube del logo (acento, detalles) */
   --celeste: #2fa6e4;    /* extremo claro del degradado del logo */
   --azul-hondo: #0f5a9c; /* extremo oscuro del degradado del logo */
   --azul-suave: rgba(47, 166, 228, 0.45);
 
-  --borde: rgba(236, 233, 227, 0.1);
+  --borde: rgba(20, 20, 18, 0.12);
   --sans: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
 }
@@ -60,7 +62,7 @@ body::after {
   inset: 0;
   z-index: 1;
   pointer-events: none;
-  background: radial-gradient(130% 90% at 50% 8%, transparent 40%, rgba(0, 0, 0, 0.55) 100%);
+  background: radial-gradient(130% 90% at 50% 8%, transparent 55%, rgba(60, 58, 50, 0.06) 100%);
 }
 
 /* ---------- Fondo de ondas (canvas) ---------- */
@@ -68,6 +70,7 @@ body::after {
   position: fixed;
   inset: 0;
   z-index: 0;
+  opacity: var(--op-salida, 1);
   width: 100%;
   height: 100%;
   display: block;
@@ -78,6 +81,7 @@ body::after {
   position: fixed;
   inset: 0;
   z-index: 2;
+  opacity: calc(var(--op-despiece, 1) * var(--op-salida, 1));
   overflow: hidden;
   pointer-events: none;
 }
@@ -91,12 +95,12 @@ body::after {
 }
 .arcos circle {
   fill: none;
-  stroke: rgba(236, 233, 227, 0.2);
+  stroke: rgba(20, 20, 18, 0.11);
   stroke-width: 1;
   vector-effect: non-scaling-stroke;
 }
 .arcos circle.acento {
-  stroke: rgba(47, 166, 228, 0.65);
+  stroke: rgba(26, 134, 204, 0.55);
 }
 
 /* Disco oscuro que asoma por abajo (su borde superior marca la línea ~62% alto) */
@@ -109,10 +113,10 @@ body::after {
   transform: translateX(-50%);
   border-radius: 50%;
   background:
-    radial-gradient(56% 56% at 50% 28%, #27282b 0%, #1a1b1d 46%, #0b0c0d 100%);
+    radial-gradient(56% 56% at 50% 28%, #fbfbf9 0%, #efede8 48%, #e3e1da 100%);
   box-shadow:
-    inset 0 3px 2px rgba(236, 233, 227, 0.09),
-    0 -40px 140px rgba(0, 0, 0, 0.55);
+    inset 0 3px 2px rgba(255, 255, 255, 0.95),
+    0 -30px 120px rgba(60, 58, 50, 0.07);
 }
 /* Halo cálido rozando el borde superior del disco */
 .disco-brillo {
@@ -124,9 +128,8 @@ body::after {
   transform: translate(-50%, -64%);
   pointer-events: none;
   background:
-    radial-gradient(50% 62% at 50% 100%, var(--azul-suave) 0%, rgba(47, 166, 228, 0.07) 42%, transparent 72%);
-  opacity: 0.55;
-  mix-blend-mode: screen;
+    radial-gradient(50% 62% at 50% 100%, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.35) 42%, transparent 72%);
+  opacity: 0.8;
   filter: blur(8px);
 }
 
@@ -141,12 +144,12 @@ body::after {
   align-items: center;
   gap: clamp(10px, 2vw, 22px);
   padding: 7px 7px 7px clamp(14px, 2.2vw, 22px);
-  background: rgba(23, 24, 26, 0.72);
+  background: rgba(255, 255, 255, 0.78);
   border: 1px solid var(--borde);
   border-radius: 999px;
   backdrop-filter: blur(16px) saturate(1.2);
   -webkit-backdrop-filter: blur(16px) saturate(1.2);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 10px 40px rgba(60, 58, 50, 0.08);
   max-width: calc(100vw - 24px);
 }
 
@@ -169,7 +172,7 @@ body::after {
   letter-spacing: -0.01em;
 }
 .marca-texto b { font-weight: 700; }
-.marca-texto span { font-weight: 380; color: #d9d5cd; }
+.marca-texto span { font-weight: 380; color: var(--niebla); }
 
 .cta {
   display: inline-flex;
@@ -177,8 +180,8 @@ body::after {
   gap: 8px;
   padding: 9px clamp(16px, 2.2vw, 22px);
   border-radius: 999px;
-  background: var(--hueso);
-  color: #141210;
+  background: var(--boton);
+  color: #fff;
   font-weight: 560;
   font-size: 0.92rem;
   letter-spacing: 0.01em;
@@ -274,7 +277,7 @@ body::after {
 .nombre-abc,
 .nombre-dd { max-width: 100%; }
 .nombre-abc { font-weight: 640; }
-.nombre-dd { font-weight: 360; color: #d9d5cd; }
+.nombre-dd { font-weight: 360; color: #2e2e2a; }
 
 .frase {
   max-width: 40ch;
@@ -309,7 +312,7 @@ body::after {
   margin: 18px 0 0;
   font-size: 0.86rem;
   line-height: 1.5;
-  color: var(--tenue);
+  color: var(--niebla);
 }
 
 /* Etiquetas de cada capa (JS las coloca junto a su capa) */
@@ -339,7 +342,7 @@ body::after {
   position: absolute;
   top: 0.62em;
   height: 1px;
-  background: linear-gradient(to right, rgba(236, 233, 227, 0.08), rgba(236, 233, 227, 0.4));
+  background: linear-gradient(to right, rgba(20, 20, 18, 0.08), rgba(20, 20, 18, 0.45));
 }
 .capas-etiquetas .linea::before {
   content: "";
@@ -356,7 +359,7 @@ body::after {
   font-family: var(--mono);
   font-size: 0.64rem;
   letter-spacing: 0.2em;
-  color: var(--azul);
+  color: var(--azul-hondo);
 }
 .capas-etiquetas .nom {
   font-family: var(--mono);
@@ -455,9 +458,9 @@ body::after {
 .tarjeta {
   margin: 0;
   padding: 10px 10px 24px;
-  border: 1px solid var(--borde);
+  border: 1px solid rgba(20, 20, 18, 0.06);
   border-radius: 24px;
-  background: rgba(236, 233, 227, 0.025);
+  background: var(--blanco);
 }
 .foto {
   margin: 0;
@@ -470,7 +473,6 @@ body::after {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: saturate(0.92) brightness(0.94);
 }
 .tarjeta .foto { aspect-ratio: 4 / 5; }
 .tarjeta-num {
@@ -478,7 +480,7 @@ body::after {
   font-family: var(--mono);
   font-size: 0.66rem;
   letter-spacing: 0.22em;
-  color: var(--celeste);
+  color: var(--azul-hondo);
 }
 .tarjeta-nom {
   margin: 0 10px;
@@ -526,7 +528,6 @@ body::after {
   aspect-ratio: 4 / 5;
   object-fit: cover;
   border-radius: 20px;
-  filter: saturate(0.92) brightness(0.94);
 }
 .montaje figcaption {
   margin-top: 14px;
@@ -624,7 +625,7 @@ body::after {
   align-items: center;
   gap: 9px;
   padding: 14px 22px;
-  border: 1px solid rgba(236, 233, 227, 0.22);
+  border: 1px solid rgba(20, 20, 18, 0.25);
   border-radius: 999px;
   color: var(--hueso);
   font-size: 0.95rem;
@@ -633,7 +634,7 @@ body::after {
   transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
 }
 .boton:hover { border-color: var(--azul); background: rgba(26, 134, 204, 0.12); }
-.boton-principal { background: var(--hueso); border-color: var(--hueso); color: #141210; }
+.boton-principal { background: var(--boton); border-color: var(--boton); color: #fff; }
 .boton-principal:hover { background: var(--azul-hondo); border-color: var(--azul-hondo); color: #fff; }
 .boton-principal:hover .cta-punto { background: #fff; box-shadow: none; }
 .visita-foto { border-radius: 24px; aspect-ratio: 843 / 360; }
@@ -645,7 +646,7 @@ body::after {
   padding: 72px 20px 64px;
   text-align: center;
   border-top: 1px solid var(--borde);
-  background: linear-gradient(to bottom, rgba(14, 15, 16, 0.6), var(--negro));
+  background: var(--blanco);
 }
 .pie-logo {
   display: block;
