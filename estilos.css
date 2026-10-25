@@ -1,0 +1,744 @@
+/* ============================================================
+   ABC del Descanso · Colchones en Lorca
+   Estética de referencia: iyO One (oscuro, tipográfico, premium)
+   Colores de marca: azul de la nube del logo de ABC Descanso sobre fondo oscuro
+   ============================================================ */
+
+@font-face {
+  font-family: "Geist";
+  src: url("fuentes/Geist-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Geist Mono";
+  src: url("fuentes/GeistMono-Variable.woff2") format("woff2");
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
+}
+
+:root {
+  --negro: #0e0f10;      /* fondo, casi negro cálido */
+  --carbon: #17181a;     /* superficies (disco, pastilla) */
+  --carbon-alto: #202123;
+  --hueso: #ece9e3;      /* texto principal / nombre */
+  --niebla: #9a978f;     /* texto secundario */
+  --tenue: #5c5b57;      /* etiquetas, arcos */
+  --azul: #1a86cc;       /* azul de la nube del logo (acento, detalles) */
+  --celeste: #2fa6e4;    /* extremo claro del degradado del logo */
+  --azul-hondo: #0f5a9c; /* extremo oscuro del degradado del logo */
+  --azul-suave: rgba(47, 166, 228, 0.45);
+
+  --borde: rgba(236, 233, 227, 0.1);
+  --sans: "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--negro);
+  color: var(--hueso);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+/* Vignette sutil para dar profundidad al fondo */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: radial-gradient(130% 90% at 50% 8%, transparent 40%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+/* ---------- Fondo de ondas (canvas) ---------- */
+#ondas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* ---------- Escena: disco + arcos ---------- */
+.escena {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.arcos {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+.arcos circle {
+  fill: none;
+  stroke: rgba(236, 233, 227, 0.2);
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.arcos circle.acento {
+  stroke: rgba(47, 166, 228, 0.65);
+}
+
+/* Disco oscuro que asoma por abajo (su borde superior marca la línea ~62% alto) */
+.disco {
+  position: absolute;
+  left: 50%;
+  top: 62svh;
+  width: min(132vh, 168vw);
+  aspect-ratio: 1 / 1;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background:
+    radial-gradient(56% 56% at 50% 28%, #27282b 0%, #1a1b1d 46%, #0b0c0d 100%);
+  box-shadow:
+    inset 0 3px 2px rgba(236, 233, 227, 0.09),
+    0 -40px 140px rgba(0, 0, 0, 0.55);
+}
+/* Halo cálido rozando el borde superior del disco */
+.disco-brillo {
+  position: absolute;
+  left: 50%;
+  top: 62svh;
+  width: min(120vh, 150vw);
+  height: 42vmin;
+  transform: translate(-50%, -64%);
+  pointer-events: none;
+  background:
+    radial-gradient(50% 62% at 50% 100%, var(--azul-suave) 0%, rgba(47, 166, 228, 0.07) 42%, transparent 72%);
+  opacity: 0.55;
+  mix-blend-mode: screen;
+  filter: blur(8px);
+}
+
+/* ---------- Píldora flotante ---------- */
+.pastilla {
+  position: fixed;
+  z-index: 20;
+  top: clamp(14px, 2.2vw, 26px);
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 2vw, 22px);
+  padding: 7px 7px 7px clamp(14px, 2.2vw, 22px);
+  background: rgba(23, 24, 26, 0.72);
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+  max-width: calc(100vw - 24px);
+}
+
+.marca {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  color: var(--hueso);
+  white-space: nowrap;
+}
+/* Marca: la nube del logo real + palabra «abcdescanso» como en su logotipo */
+.marca-nube {
+  width: 34px;
+  height: auto;
+  display: block;
+}
+.marca-texto {
+  font-size: clamp(0.98rem, 2vw, 1.08rem);
+  letter-spacing: -0.01em;
+}
+.marca-texto b { font-weight: 700; }
+.marca-texto span { font-weight: 380; color: #d9d5cd; }
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px clamp(16px, 2.2vw, 22px);
+  border-radius: 999px;
+  background: var(--hueso);
+  color: #141210;
+  font-weight: 560;
+  font-size: 0.92rem;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+}
+.cta-punto {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--azul);
+  box-shadow: 0 0 10px var(--azul);
+}
+.cta:hover {
+  background: var(--azul-hondo);
+  color: #fff;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 26px rgba(47, 166, 228, 0.35);
+}
+.cta:hover .cta-punto { background: #fff; box-shadow: none; }
+
+/* ---------- Portada + despiece (sección fijada) ---------- */
+.producto {
+  position: relative;
+  z-index: 5;
+  height: 420vh;
+}
+.pin {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+}
+#render {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+  opacity: 0;
+}
+
+.portada-texto {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  top: clamp(92px, 16vh, 168px);
+  transform: translateX(-50%);
+  width: min(100% - 32px, 1200px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  will-change: opacity, transform;
+}
+
+.etiqueta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 clamp(16px, 2.4vw, 26px);
+  font-family: var(--mono);
+  font-size: clamp(0.62rem, 1.4vw, 0.72rem);
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.34em;
+  color: var(--niebla);
+}
+.etiqueta-punto {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--azul);
+  box-shadow: 0 0 10px var(--azul-suave);
+}
+
+.nombre {
+  margin: 0;
+  max-width: 100%;
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  font-size: clamp(2.6rem, 8.6vw, 7.6rem);
+  color: var(--hueso);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 0.28em;
+  overflow-wrap: break-word;
+}
+.nombre-abc,
+.nombre-dd { max-width: 100%; }
+.nombre-abc { font-weight: 640; }
+.nombre-dd { font-weight: 360; color: #d9d5cd; }
+
+.frase {
+  max-width: 40ch;
+  margin: clamp(16px, 2.4vw, 26px) auto 0;
+  font-size: clamp(0.98rem, 1.7vw, 1.2rem);
+  font-weight: 350;
+  line-height: 1.5;
+  color: var(--niebla);
+  text-wrap: balance;
+}
+
+/* Bloque «Por dentro» (aparece al despiezar) */
+.por-dentro {
+  position: absolute;
+  z-index: 3;
+  left: clamp(24px, 6vw, 96px);
+  top: 50%;
+  margin-top: -90px;
+  max-width: 300px;
+  opacity: 0;
+  pointer-events: none;
+}
+.por-dentro-titulo {
+  margin: 0;
+  font-size: clamp(2rem, 4.2vw, 3.6rem);
+  font-weight: 420;
+  letter-spacing: -0.04em;
+  line-height: 0.98;
+  color: var(--hueso);
+}
+.por-dentro-nota {
+  margin: 18px 0 0;
+  font-size: 0.86rem;
+  line-height: 1.5;
+  color: var(--tenue);
+}
+
+/* Etiquetas de cada capa (JS las coloca junto a su capa) */
+.capas-etiquetas {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+}
+.capas-etiquetas li {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  grid-template-columns: auto auto;
+  column-gap: 10px;
+  row-gap: 3px;
+  align-items: baseline;
+  max-width: 230px;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+.capas-etiquetas .linea {
+  position: absolute;
+  top: 0.62em;
+  height: 1px;
+  background: linear-gradient(to right, rgba(236, 233, 227, 0.08), rgba(236, 233, 227, 0.4));
+}
+.capas-etiquetas .linea::before {
+  content: "";
+  position: absolute;
+  left: -2px;
+  top: -2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--azul);
+  box-shadow: 0 0 8px var(--azul-suave);
+}
+.capas-etiquetas .num {
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.2em;
+  color: var(--azul);
+}
+.capas-etiquetas .nom {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.26em;
+  color: var(--hueso);
+}
+.capas-etiquetas .desc {
+  grid-column: 2;
+  font-size: 0.82rem;
+  line-height: 1.4;
+  color: var(--niebla);
+}
+
+/* Pista de scroll */
+.pista {
+  position: absolute;
+  z-index: 3;
+  left: 50%;
+  bottom: clamp(18px, 4vh, 40px);
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+.pista-texto {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--niebla);
+}
+.pista-linea {
+  width: 1px;
+  height: 34px;
+  background: linear-gradient(to bottom, var(--niebla), transparent);
+}
+
+/* ---------- Secciones (después del despiece) ---------- */
+.manifiesto,
+.catalogo,
+.ficha,
+.visita {
+  position: relative;
+  z-index: 5;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(96px, 13vw, 190px) clamp(20px, 6vw, 96px);
+}
+
+.cabecera { margin-bottom: clamp(40px, 6vw, 84px); }
+.titulo {
+  margin: 0;
+  font-size: clamp(2.5rem, 6.2vw, 6rem);
+  font-weight: 420;
+  letter-spacing: -0.045em;
+  line-height: 0.95;
+  color: var(--hueso);
+}
+.titulo-grande { font-size: clamp(3.2rem, 9vw, 8.6rem); }
+.cabecera-txt {
+  max-width: 34ch;
+  margin: 22px 0 0;
+  font-size: clamp(0.98rem, 1.4vw, 1.12rem);
+  line-height: 1.55;
+  color: var(--niebla);
+}
+
+/* Manifiesto */
+.manifiesto {
+  min-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.manifiesto-texto {
+  max-width: 20ch;
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 4.6rem);
+  font-weight: 400;
+  letter-spacing: -0.04em;
+  line-height: 1.06;
+  color: var(--hueso);
+}
+.manifiesto-texto .palabra { opacity: 0.14; }
+
+/* Qué encontrarás */
+.tarjetas {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: clamp(14px, 1.6vw, 22px);
+}
+.tarjeta {
+  margin: 0;
+  padding: 10px 10px 24px;
+  border: 1px solid var(--borde);
+  border-radius: 24px;
+  background: rgba(236, 233, 227, 0.025);
+}
+.foto {
+  margin: 0;
+  overflow: hidden;
+  border-radius: 16px;
+  background: var(--carbon);
+}
+.foto img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: saturate(0.92) brightness(0.94);
+}
+.tarjeta .foto { aspect-ratio: 4 / 5; }
+.tarjeta-num {
+  margin: 20px 10px 6px;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.22em;
+  color: var(--celeste);
+}
+.tarjeta-nom {
+  margin: 0 10px;
+  font-size: clamp(1.15rem, 1.6vw, 1.4rem);
+  font-weight: 520;
+  letter-spacing: -0.02em;
+}
+.tarjeta-txt {
+  margin: 10px 10px 0;
+  font-size: 0.93rem;
+  line-height: 1.5;
+  color: var(--niebla);
+}
+
+/* Montajes: fila horizontal que avanza al bajar (escritorio) */
+.montajes { position: relative; z-index: 5; }
+.montajes-pin {
+  display: flex;
+  align-items: center;
+  gap: clamp(32px, 5vw, 80px);
+  min-height: 100vh;
+  min-height: 100svh;
+  padding: 0 0 0 clamp(20px, 6vw, 96px);
+  overflow: hidden;
+}
+.montajes-cab {
+  flex: 0 0 clamp(260px, 26vw, 380px);
+  margin: 0;
+}
+.montajes-pista {
+  display: flex;
+  gap: clamp(14px, 1.6vw, 22px);
+  padding-right: clamp(20px, 6vw, 96px);
+  will-change: transform;
+}
+.montaje {
+  flex: 0 0 auto;
+  width: clamp(260px, 30vw, 440px);
+  margin: 0;
+}
+.montaje img {
+  display: block;
+  width: 100%;
+  height: auto;          /* sin esto, el atributo height del <img> anula el aspect-ratio */
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  border-radius: 20px;
+  filter: saturate(0.92) brightness(0.94);
+}
+.montaje figcaption {
+  margin-top: 14px;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  line-height: 1.6;
+  letter-spacing: 0.06em;
+  color: var(--niebla);
+}
+
+/* Ficha de la tienda */
+.ficha {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.7fr);
+  gap: clamp(32px, 5vw, 80px);
+  align-items: start;
+}
+.ficha .cabecera { margin: 0; position: sticky; top: 120px; }
+.ficha-lista { margin: 0; }
+.ficha-fila {
+  display: grid;
+  grid-template-columns: clamp(110px, 14vw, 200px) minmax(0, 1fr);
+  gap: 18px;
+  padding: 22px 0;
+  border-top: 1px solid var(--borde);
+}
+.ficha-fila:last-child { border-bottom: 1px solid var(--borde); }
+.ficha-fila dt {
+  padding-top: 4px;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--niebla);
+}
+.ficha-fila dd {
+  margin: 0;
+  font-size: clamp(1rem, 1.5vw, 1.22rem);
+  line-height: 1.5;
+  color: var(--hueso);
+  overflow-wrap: anywhere;
+}
+.ficha-fila a,
+.visita a:not(.boton) { color: var(--hueso); text-decoration: underline; text-decoration-color: var(--azul); text-underline-offset: 4px; }
+
+/* Visítanos */
+.visita {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(32px, 5vw, 80px);
+  align-items: center;
+}
+.visita-dir {
+  margin: 26px 0 30px;
+  font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+  color: var(--hueso);
+}
+.horario {
+  width: 100%;
+  max-width: 460px;
+  border-collapse: collapse;
+}
+.horario caption {
+  text-align: left;
+  padding-bottom: 12px;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  color: var(--niebla);
+}
+.horario th,
+.horario td {
+  padding: 13px 0;
+  border-top: 1px solid var(--borde);
+  font-size: 0.98rem;
+  text-align: left;
+}
+.horario th { font-weight: 400; color: var(--niebla); }
+.horario td { color: var(--hueso); text-align: right; font-variant-numeric: tabular-nums; }
+.visita-nota {
+  margin: 14px 0 0;
+  font-size: 0.86rem;
+  color: var(--tenue);
+}
+.botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 32px;
+}
+.boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 14px 22px;
+  border: 1px solid rgba(236, 233, 227, 0.22);
+  border-radius: 999px;
+  color: var(--hueso);
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease;
+}
+.boton:hover { border-color: var(--azul); background: rgba(26, 134, 204, 0.12); }
+.boton-principal { background: var(--hueso); border-color: var(--hueso); color: #141210; }
+.boton-principal:hover { background: var(--azul-hondo); border-color: var(--azul-hondo); color: #fff; }
+.boton-principal:hover .cta-punto { background: #fff; box-shadow: none; }
+.visita-foto { border-radius: 24px; aspect-ratio: 843 / 360; }
+
+/* Pie */
+.pie {
+  position: relative;
+  z-index: 5;
+  padding: 72px 20px 64px;
+  text-align: center;
+  border-top: 1px solid var(--borde);
+  background: linear-gradient(to bottom, rgba(14, 15, 16, 0.6), var(--negro));
+}
+.pie-logo {
+  display: block;
+  width: 170px;
+  height: auto;
+  margin: 0 auto 26px;
+}
+.pie-datos {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  line-height: 1.8;
+  letter-spacing: 0.08em;
+  color: var(--niebla);
+}
+.pie-datos a { color: var(--hueso); text-decoration: none; }
+.pie-redes { margin-top: 6px; }
+
+@media (max-width: 1100px) {
+  .tarjetas { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ficha,
+  .visita { grid-template-columns: minmax(0, 1fr); }
+  .ficha .cabecera { position: static; }
+}
+
+/* Sin WebGL: portada estática */
+.sin-3d .producto { height: auto; }
+.sin-3d .pin { height: 100svh; }
+.sin-3d #render,
+.sin-3d .por-dentro,
+.sin-3d .capas-etiquetas { display: none; }
+
+/* ---------- Estado inicial de animación (JS lo revela) ---------- */
+.js-anim .portada-texto .etiqueta,
+.js-anim .nombre-abc,
+.js-anim .nombre-dd,
+.js-anim .frase { opacity: 0; }
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 700px) {
+  .marca-nube { width: 30px; }
+  .marca-texto { font-size: 0.95rem; }
+  .producto { height: 360vh; }
+  .portada-texto { top: clamp(84px, 13vh, 120px); }
+  .nombre {
+    line-height: 0.98;
+    font-size: clamp(2.4rem, 12vw, 3.6rem);
+    letter-spacing: -0.035em;
+  }
+  .frase { max-width: 30ch; font-size: 0.95rem; }
+  .disco-brillo { opacity: 0.42; }
+  .por-dentro {
+    left: 20px;
+    right: 20px;
+    top: clamp(84px, 12vh, 120px);
+    margin-top: 0;
+    max-width: none;
+  }
+  .por-dentro-titulo { font-size: 2rem; }
+  .por-dentro-nota { margin-top: 10px; font-size: 0.78rem; }
+  .capas-etiquetas li { max-width: 120px; column-gap: 6px; }
+  .capas-etiquetas .desc { display: none; }
+  .capas-etiquetas .num { font-size: 0.58rem; }
+  .capas-etiquetas .nom { font-size: 0.62rem; letter-spacing: 0.18em; }
+
+  .tarjetas { grid-template-columns: minmax(0, 1fr); }
+  .tarjeta .foto { aspect-ratio: 5 / 4; }
+  .montajes-pin {
+    display: block;
+    min-height: 0;
+    padding: clamp(72px, 16vw, 110px) 0;
+  }
+  .montajes-cab { padding: 0 20px; margin-bottom: 32px; }
+  .montajes-pista {
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 20px;
+    padding: 0 20px 8px;
+    scrollbar-width: none;
+  }
+  .montajes-pista::-webkit-scrollbar { display: none; }
+  .montaje { width: 76vw; scroll-snap-align: start; }
+  .ficha-fila { grid-template-columns: minmax(0, 1fr); gap: 6px; padding: 18px 0; }
+  .botones { flex-direction: column; align-items: stretch; }
+  .boton { justify-content: center; }
+}
+
+/* ---------- Accesibilidad: movimiento reducido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js-anim .portada-texto .etiqueta,
+  .js-anim .nombre-abc,
+  .js-anim .nombre-dd,
+  .js-anim .frase { opacity: 1; }
+  * { animation: none !important; transition: none !important; }
+}
