@@ -245,7 +245,242 @@
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { ST.refresh(); });
   }
 
-  function alCargar() { animar(); secciones(); }
+  /* ----------------- Scroll suave (Lenis) sincronizado con ScrollTrigger ----------------- */
+  let lenis = null;
+  function scrollSuave() {
+    if (reduce || !window.Lenis || !window.gsap || !window.ScrollTrigger) return;
+    lenis = new window.Lenis({ lerp: 0.1, smoothWheel: true });
+    lenis.on("scroll", window.ScrollTrigger.update);
+    window.gsap.ticker.add(function (t) { lenis.raf(t * 1000); });
+    window.gsap.ticker.lagSmoothing(0);
+  }
+
+  // Enlaces internos (#asistente, #portada…) con el mismo scroll suave
+  document.addEventListener("click", function (e) {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a) return;
+    const id = a.getAttribute("href");
+    const destino = id.length > 1 && document.querySelector(id);
+    if (!destino) return;
+    e.preventDefault();
+    if (lenis) lenis.scrollTo(destino, { offset: -24 });
+    else destino.scrollIntoView({ behavior: reduce ? "auto" : "smooth" });
+    history.replaceState(null, "", id);
+  });
+
+  /* ----------------- Pantalla de carga ----------------- */
+  function quitaCargador(siguiente) {
+    const c = document.querySelector(".cargador");
+    function listo() {
+      document.dispatchEvent(new Event("abc:listo"));   // render.js arranca la entrada del 3D
+      siguiente();
+    }
+    if (!c || reduce) { if (c) c.remove(); listo(); return; }
+    setTimeout(function () {
+      c.classList.add("fuera");
+      setTimeout(function () { c.remove(); }, 700);
+      listo();
+    }, Math.max(0, 700 - performance.now()));
+  }
+
+  /* ----------------- Asistente: tu colchón ideal ----------------- */
+  // Criterios generales de descanso, no datos de ningún modelo concreto.
+  function recomienda(r) {
+    let muelles = 0, visco = 0;
+    const motivos = [];
+    if (r.pareja === "pareja") {
+      muelles += 2;
+      motivos.push("Al dormir en pareja, el muelle ensacado hace que se note menos el movimiento del otro: cada muelle trabaja por separado.");
+    }
+    if (r.calor === "si") {
+      muelles += 2;
+      motivos.push("Si pasas calor, un núcleo de muelles deja circular más el aire que uno solo de espuma.");
+    } else if (r.calor === "aveces") {
+      muelles += 1;
+    }
+    if (r.postura === "lado") {
+      visco += 2;
+      motivos.push("De lado, conviene una capa de confort que acoja hombro y cadera; la viscoelástica se adapta bien a esa forma.");
+    } else if (r.postura === "abajo") {
+      muelles += 1;
+      motivos.push("Boca abajo conviene un apoyo más firme para que la cadera no se hunda.");
+    } else if (r.postura === "arriba") {
+      muelles += 1; visco += 1;
+      motivos.push("Boca arriba busca un apoyo uniforme que mantenga la espalda recta.");
+    } else if (r.postura === "variado") {
+      muelles += 1;
+      motivos.push("Si te mueves mucho, ayuda un colchón con buena respuesta al cambiar de postura.");
+    }
+    if (r.firmeza === "blando") visco += 1;
+    if (r.firmeza === "firme") muelles += 1;
+
+    let tipo = "Muelle ensacado con viscoelástica";
+    if (muelles - visco > 1) tipo = "Muelle ensacado";
+    else if (visco - muelles > 1) tipo = "Viscoelástico";
+
+    const porPostura = { lado: "Intermedia", arriba: "Intermedia a firme", abajo: "Firme", variado: "Intermedia" };
+    const preferida = { blando: "Más blanda", intermedio: "Intermedia", firme: "Firme" };
+    const firmeza = preferida[r.firmeza] || porPostura[r.postura] || "Intermedia";
+    if (r.firmeza === "nose") motivos.push("La firmeza la hemos orientado por tu postura; en la tienda la ajustas probando.");
+
+    const medida = r.medida && r.medida !== "otra" ? r.medida : "La vemos contigo";
+    return { tipo: tipo, firmeza: firmeza, medida: medida, motivos: motivos.slice(0, 3) };
+  }
+
+  function asistente() {
+    const test = document.querySelector("[data-test]");
+    if (!test) return;
+    const pasos = Array.prototype.slice.call(test.querySelectorAll(".paso"));
+    const resultado = test.querySelector("[data-resultado]");
+    const barra = test.querySelector("[data-test-progreso]");
+    const atras = test.querySelector("[data-test-atras]");
+    const aviso = test.querySelector("[data-test-aviso]");
+    const resp = {}, textos = {};
+    let actual = 0;
+
+    function muestra(i, enfocar) {
+      actual = i;
+      pasos.forEach(function (p, k) { p.hidden = k !== i; });
+      resultado.hidden = i < pasos.length;
+      const visible = i < pasos.length ? pasos[i] : resultado;
+      visible.classList.remove("entra");
+      void visible.offsetWidth;            // reinicia la animación de entrada
+      visible.classList.add("entra");
+      barra.style.width = Math.round(Math.min(i, pasos.length) / pasos.length * 100) + "%";
+      atras.hidden = i === 0;
+      aviso.textContent = i < pasos.length ? "Pregunta " + (i + 1) + " de " + pasos.length : "Ya tienes tu punto de partida.";
+      if (enfocar) {
+        const foco = i < pasos.length
+          ? visible.querySelector('.opcion[aria-pressed="true"]') || visible.querySelector(".opcion")
+          : resultado;
+        foco.focus({ preventScroll: true });
+      }
+    }
+
+    function pinta() {
+      const r = recomienda(resp);
+      resultado.querySelector('[data-r="tipo"]').textContent = r.tipo;
+      resultado.querySelector('[data-r="firmeza"]').textContent = r.firmeza;
+      resultado.querySelector('[data-r="medida"]').textContent = r.medida;
+      const lista = resultado.querySelector('[data-r="motivos"]');
+      lista.innerHTML = "";
+      r.motivos.forEach(function (m) {
+        const li = document.createElement("li");
+        li.textContent = m;
+        lista.appendChild(li);
+      });
+      const cuerpo = [
+        "Hola, he hecho el test de la web y me gustaría que me aconsejarais.",
+        "",
+        "· Cómo duermo: " + textos.postura,
+        "· Solo o en pareja: " + textos.pareja,
+        "· Calor por la noche: " + textos.calor,
+        "· Cómo me gusta el colchón: " + textos.firmeza,
+        "· Medida: " + textos.medida,
+        "",
+        "Orientación de la web: " + r.tipo + ", firmeza " + r.firmeza.toLowerCase() + ".",
+        "",
+        "Gracias."
+      ].join("\n");
+      resultado.querySelector('[data-r="email"]').href = "mailto:abcdeldescansolorca@yahoo.es?subject=" +
+        encodeURIComponent("Consulta desde la web: mi colchón ideal") + "&body=" + encodeURIComponent(cuerpo);
+    }
+
+    pasos.forEach(function (paso, i) {
+      const opciones = paso.querySelectorAll(".opcion");
+      opciones.forEach(function (b) {
+        b.setAttribute("aria-pressed", "false");
+        b.addEventListener("click", function () {
+          opciones.forEach(function (o) { o.setAttribute("aria-pressed", String(o === b)); });
+          resp[paso.dataset.paso] = b.dataset.valor;
+          textos[paso.dataset.paso] = b.textContent.trim();
+          setTimeout(function () {
+            if (i + 1 < pasos.length) { muestra(i + 1, true); return; }
+            pinta();
+            muestra(pasos.length, true);
+          }, reduce ? 0 : 220);
+        });
+      });
+    });
+    atras.addEventListener("click", function () { if (actual > 0) muestra(actual - 1, true); });
+    test.querySelector("[data-test-reiniciar]").addEventListener("click", function () {
+      Object.keys(resp).forEach(function (k) { delete resp[k]; delete textos[k]; });
+      test.querySelectorAll(".opcion").forEach(function (o) { o.setAttribute("aria-pressed", "false"); });
+      muestra(0, true);
+    });
+    muestra(0, false);
+  }
+
+  /* ----------------- Abierto ahora (hora de Madrid, horario habitual) ----------------- */
+  function estadoTienda() {
+    const el = document.querySelector("[data-estado]");
+    if (!el || !window.Intl) return;
+    // minutos desde medianoche; 0 = domingo
+    const HORARIO = {
+      0: [], 1: [[600, 810], [1050, 1230]], 2: [[600, 810], [1050, 1230]], 3: [[600, 810], [1050, 1230]],
+      4: [[600, 810], [1050, 1230]], 5: [[600, 810], [1050, 1230]], 6: [[600, 810]]
+    };
+    const DIAS = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
+    function hhmm(m) { return String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0"); }
+    function ahora() {
+      const p = {};
+      new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Madrid", weekday: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23" })
+        .formatToParts(new Date()).forEach(function (x) { p[x.type] = x.value; });
+      return { dia: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(p.weekday), min: (Number(p.hour) % 24) * 60 + Number(p.minute) };
+    }
+    function actualiza() {
+      const t = ahora();
+      const hoy = HORARIO[t.dia] || [];
+      const tramo = hoy.find(function (h) { return t.min >= h[0] && t.min < h[1]; });
+      let texto = "";
+      if (tramo) texto = "Abierto ahora · cierra a las " + hhmm(tramo[1]);
+      else {
+        const luego = hoy.find(function (h) { return h[0] > t.min; });
+        if (luego) texto = "Cerrado ahora · abre hoy a las " + hhmm(luego[0]);
+        else {
+          for (let k = 1; k <= 7; k++) {
+            const d = (t.dia + k) % 7;
+            if (HORARIO[d].length) {
+              texto = "Cerrado ahora · abre " + (k === 1 ? "mañana" : "el " + DIAS[d]) + " a las " + hhmm(HORARIO[d][0][0]);
+              break;
+            }
+          }
+        }
+      }
+      el.querySelector("[data-estado-texto]").textContent = texto;
+      el.classList.toggle("abierto", Boolean(tramo));
+      el.hidden = false;
+    }
+    actualiza();
+    setInterval(actualiza, 60000);
+  }
+
+  /* ----------------- Mapa: Google Maps solo si se pide ----------------- */
+  function mapa() {
+    const caja = document.querySelector("[data-mapa]");
+    const boton = caja && caja.querySelector("[data-cargar-mapa]");
+    if (!boton) return;
+    boton.addEventListener("click", function () {
+      const f = document.createElement("iframe");
+      f.src = "https://www.google.com/maps?q=" + encodeURIComponent("ABC Descanso, Calle Nogalte 7, 30800 Lorca") + "&output=embed";
+      f.title = "Mapa de ABC Descanso en Google Maps";
+      f.loading = "lazy";
+      f.referrerPolicy = "no-referrer-when-downgrade";
+      f.allowFullscreen = true;
+      caja.appendChild(f);
+      caja.querySelector(".mapa-portada").remove();
+    });
+  }
+
+  asistente();
+  estadoTienda();
+  mapa();
+
+  function alCargar() {
+    scrollSuave();
+    secciones();
+    quitaCargador(animar);
+  }
   if (document.readyState === "complete") alCargar();
   else window.addEventListener("load", alCargar);
 })();

@@ -14,10 +14,15 @@ somier con **Three.js r165** (local, `js/three/`, cargado con import map) en `re
 - [x] Manifiesto que se ilumina palabra a palabra.
 - [x] Qué encontrarás: colchones, canapés, somieres y bases, almohadas y ropa de cama (fotos reales).
 - [x] Montajes reales: fila horizontal (escritorio) / carrusel (móvil) con fotos de su Instagram.
+- [x] Asistente «Tu colchón ideal»: 5 preguntas → tipo, firmeza y medida orientativos + llamar o enviar
+      las respuestas por email (no guarda datos; criterios generales, no modelos concretos).
 - [x] Ficha de la tienda (solo datos confirmados).
-- [x] Visítanos: horario, llamar, cómo llegar, email.
+- [x] Preguntas frecuentes (solo respuestas confirmadas) con datos estructurados FAQPage.
+- [x] Visítanos: «Abierto ahora» en vivo (hora de Madrid, horario habitual), llamar, cómo llegar,
+      email y mapa de Google que solo se carga al pulsar.
+- [x] Pantalla de carga con la nube del logo y scroll suave (Lenis 1.3.25, local).
+- [x] Aviso legal, privacidad y cookies (titular y NIF PENDIENTE), robots.txt e imagen social 1200×630.
 - [ ] Opiniones: FUERA a propósito (Google 3,4/5, 16 reseñas mixtas y sin verificar).
-- [ ] Aviso legal / privacidad: falta titular y NIF.
 
 ## Fuentes de datos y fotos (todo real)
 - CRM de Ocean Digital Services: dirección, teléfono, email, servicios publicados.

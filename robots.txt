@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+# PENDIENTE: añadir «Sitemap:» con la URL absoluta cuando haya dominio definitivo
