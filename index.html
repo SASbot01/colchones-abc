@@ -13,8 +13,28 @@
   <meta property="og:type" content="business.business" />
   <meta property="og:title" content="ABC Descanso · La tienda del descanso" />
   <meta property="og:description" content="Colchones, canapés, somieres y ropa de cama en Lorca. Calle Nogalte, 7." />
-  <meta property="og:image" content="img/tienda-interior.jpg" />
+  <!-- PENDIENTE: og:image con URL absoluta cuando haya dominio definitivo -->
+  <meta property="og:image" content="img/og-abcdescanso.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
   <meta property="og:locale" content="es_ES" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "¿Lleváis el colchón a casa?", "acceptedAnswer": { "@type": "Answer", "text": "Sí, hacemos entrega a domicilio. Llámanos y te contamos la zona y las condiciones." } },
+        { "@type": "Question", "name": "¿Montáis el canapé o la cama?", "acceptedAnswer": { "@type": "Answer", "text": "Sí, hacemos montajes en casa. Pregúntanos las condiciones al comprar." } },
+        { "@type": "Question", "name": "¿Puedo recogerlo yo en la tienda?", "acceptedAnswer": { "@type": "Answer", "text": "Sí, también puedes recogerlo en la tienda de Calle Nogalte, 7, en Lorca." } },
+        { "@type": "Question", "name": "¿Con qué marcas trabajáis?", "acceptedAnswer": { "@type": "Answer", "text": "Trabajamos con Karibian Descanso. Pregúntanos por el resto del catálogo." } },
+        { "@type": "Question", "name": "¿Tenéis ropa de cama?", "acceptedAnswer": { "@type": "Answer", "text": "Sí: almohadas, sábanas, colchas bouti, cojines y pijamas." } },
+        { "@type": "Question", "name": "¿Cómo sé qué colchón me conviene?", "acceptedAnswer": { "@type": "Answer", "text": "Haz el test de tu colchón ideal en nuestra web para tener un punto de partida y ven a la tienda a verlos." } },
+        { "@type": "Question", "name": "¿Qué horario tenéis?", "acceptedAnswer": { "@type": "Answer", "text": "De lunes a viernes de 10:00 a 13:30 y de 17:30 a 20:30; los sábados de 10:00 a 13:30; los domingos cerramos. En verano puede cambiar: llámanos antes de venir." } }
+      ]
+    }
+  </script>
 
   <script type="application/ld+json">
     {
@@ -50,6 +70,7 @@
   <link rel="preload" href="fuentes/Geist-Variable.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="preload" href="fuentes/GeistMono-Variable.woff2" as="font" type="font/woff2" crossorigin />
   <link rel="modulepreload" href="js/three/three.module.min.js" />
+  <link rel="stylesheet" href="js/lenis.css" />
   <link rel="stylesheet" href="estilos.css" />
 
   <script type="importmap">
@@ -62,10 +83,16 @@
   </script>
 </head>
 <body>
+  <!-- Pantalla de carga: la nube del logo mientras se prepara el 3D -->
+  <div class="cargador" aria-hidden="true">
+    <img class="cargador-nube" src="img/nube.png" alt="" width="400" height="228" />
+    <span class="cargador-barra"><span></span></span>
+  </div>
+
   <!-- Fondo: ondas suaves de partículas -->
   <canvas id="ondas" aria-hidden="true"></canvas>
 
-  <!-- Escena: disco oscuro que asoma por abajo + arcos concéntricos -->
+  <!-- Escena: peana clara que asoma por abajo + arcos concéntricos -->
   <div class="escena" aria-hidden="true">
     <svg class="arcos" viewBox="0 0 1600 1600" preserveAspectRatio="xMidYMax meet" focusable="false"></svg>
     <div class="disco"></div>
@@ -144,6 +171,7 @@
       <header class="cabecera">
         <p class="etiqueta"><span class="etiqueta-punto" aria-hidden="true"></span>Qué encontrarás</p>
         <h2 class="titulo" id="titulo-catalogo">De la base<br />a la almohada.</h2>
+        <p class="cabecera-txt">¿No sabes por dónde empezar? <a class="enlace-flecha" href="#asistente">Haz el test de tu colchón ideal</a></p>
       </header>
       <div class="tarjetas">
         <article class="tarjeta revela">
@@ -170,6 +198,90 @@
           <h3 class="tarjeta-nom">Almohadas y ropa de cama</h3>
           <p class="tarjeta-txt">Almohadas, sábanas, colchas bouti, cojines y pijamas.</p>
         </article>
+      </div>
+    </section>
+
+    <!-- Asistente: cinco preguntas → tipo, firmeza y medida orientativos (criterios generales, sin datos de producto) -->
+    <section class="asistente" id="asistente" aria-labelledby="titulo-asistente">
+      <header class="cabecera">
+        <p class="etiqueta"><span class="etiqueta-punto" aria-hidden="true"></span>Tu colchón ideal</p>
+        <h2 class="titulo" id="titulo-asistente">Cinco preguntas,<br />un punto de partida.</h2>
+        <p class="cabecera-txt">Contesta y te orientamos sobre el tipo de colchón, la firmeza y la medida. Después lo ves y lo pruebas en la tienda.</p>
+      </header>
+
+      <div class="test" data-test>
+        <div class="test-barra" aria-hidden="true"><span data-test-progreso></span></div>
+
+        <fieldset class="paso" data-paso="postura">
+          <legend><span class="paso-num">01 / 05</span>¿Cómo sueles dormir?</legend>
+          <div class="opciones">
+            <button type="button" class="opcion" data-valor="lado">De lado</button>
+            <button type="button" class="opcion" data-valor="arriba">Boca arriba</button>
+            <button type="button" class="opcion" data-valor="abajo">Boca abajo</button>
+            <button type="button" class="opcion" data-valor="variado">Me muevo mucho</button>
+          </div>
+        </fieldset>
+
+        <fieldset class="paso" data-paso="pareja" hidden>
+          <legend><span class="paso-num">02 / 05</span>¿Duermes solo o en pareja?</legend>
+          <div class="opciones">
+            <button type="button" class="opcion" data-valor="solo">Solo</button>
+            <button type="button" class="opcion" data-valor="pareja">En pareja</button>
+          </div>
+        </fieldset>
+
+        <fieldset class="paso" data-paso="calor" hidden>
+          <legend><span class="paso-num">03 / 05</span>¿Pasas calor por la noche?</legend>
+          <div class="opciones">
+            <button type="button" class="opcion" data-valor="si">Sí, bastante</button>
+            <button type="button" class="opcion" data-valor="aveces">A veces</button>
+            <button type="button" class="opcion" data-valor="no">No</button>
+          </div>
+        </fieldset>
+
+        <fieldset class="paso" data-paso="firmeza" hidden>
+          <legend><span class="paso-num">04 / 05</span>¿Cómo te gusta el colchón?</legend>
+          <div class="opciones">
+            <button type="button" class="opcion" data-valor="blando">Más blando</button>
+            <button type="button" class="opcion" data-valor="intermedio">Intermedio</button>
+            <button type="button" class="opcion" data-valor="firme">Más firme</button>
+            <button type="button" class="opcion" data-valor="nose">No lo sé</button>
+          </div>
+        </fieldset>
+
+        <fieldset class="paso" data-paso="medida" hidden>
+          <legend><span class="paso-num">05 / 05</span>¿Qué medida necesitas?</legend>
+          <div class="opciones opciones-medida">
+            <button type="button" class="opcion" data-valor="90 × 190 cm">90 × 190</button>
+            <button type="button" class="opcion" data-valor="105 × 190 cm">105 × 190</button>
+            <button type="button" class="opcion" data-valor="135 × 190 cm">135 × 190</button>
+            <button type="button" class="opcion" data-valor="150 × 190 cm">150 × 190</button>
+            <button type="button" class="opcion" data-valor="160 × 200 cm">160 × 200</button>
+            <button type="button" class="opcion" data-valor="180 × 200 cm">180 × 200</button>
+            <button type="button" class="opcion" data-valor="otra">Otra / no lo sé</button>
+          </div>
+        </fieldset>
+
+        <div class="resultado" data-resultado hidden tabindex="-1">
+          <p class="paso-num">Tu punto de partida</p>
+          <div class="resultado-fichas">
+            <div><span>Tipo</span><strong data-r="tipo"></strong></div>
+            <div><span>Firmeza</span><strong data-r="firmeza"></strong></div>
+            <div><span>Medida</span><strong data-r="medida"></strong></div>
+          </div>
+          <ul class="resultado-motivos" data-r="motivos"></ul>
+          <p class="resultado-nota">Es una orientación general, no una prescripción. En la tienda te enseñamos opciones para que las veas y las pruebes antes de decidir.</p>
+          <div class="botones">
+            <a class="boton boton-principal" href="tel:+34968479347"><span class="cta-punto" aria-hidden="true"></span>Llamar · 968 47 93 47</a>
+            <a class="boton" data-r="email" href="mailto:abcdeldescansolorca@yahoo.es">Enviar mis respuestas</a>
+            <button type="button" class="boton" data-test-reiniciar>Volver a empezar</button>
+          </div>
+        </div>
+
+        <div class="test-pie">
+          <button type="button" class="test-atras" data-test-atras hidden>← Atrás</button>
+          <p class="test-aviso" aria-live="polite" data-test-aviso></p>
+        </div>
       </div>
     </section>
 
@@ -209,11 +321,50 @@
       </dl>
     </section>
 
+    <!-- Preguntas frecuentes: solo respuestas confirmadas (CRM, Google, sus redes) -->
+    <section class="faq" id="preguntas" aria-labelledby="titulo-faq">
+      <header class="cabecera">
+        <p class="etiqueta"><span class="etiqueta-punto" aria-hidden="true"></span>Preguntas frecuentes</p>
+        <h2 class="titulo" id="titulo-faq">Lo que más<br />nos preguntan.</h2>
+      </header>
+      <div class="faq-lista">
+        <details class="faq-item revela">
+          <summary>¿Lleváis el colchón a casa?</summary>
+          <p>Sí, hacemos entrega a domicilio. Llámanos y te contamos la zona y las condiciones.</p>
+        </details>
+        <details class="faq-item revela">
+          <summary>¿Montáis el canapé o la cama?</summary>
+          <p>Sí, hacemos montajes en casa; en nuestro Instagram tienes algunos. Pregúntanos las condiciones al comprar.</p>
+        </details>
+        <details class="faq-item revela">
+          <summary>¿Puedo recogerlo yo en la tienda?</summary>
+          <p>Sí, también puedes recogerlo en la tienda de Calle Nogalte, 7, en Lorca.</p>
+        </details>
+        <details class="faq-item revela">
+          <summary>¿Con qué marcas trabajáis?</summary>
+          <p>Trabajamos con Karibian Descanso. Pregúntanos por el resto del catálogo.</p>
+        </details>
+        <details class="faq-item revela">
+          <summary>¿Tenéis ropa de cama?</summary>
+          <p>Sí: almohadas, sábanas, colchas bouti, cojines y pijamas.</p>
+        </details>
+        <details class="faq-item revela">
+          <summary>¿Cómo sé qué colchón me conviene?</summary>
+          <p>Haz el <a href="#asistente">test de tu colchón ideal</a> para tener un punto de partida y ven a la tienda a verlos.</p>
+        </details>
+        <details class="faq-item revela">
+          <summary>¿Qué horario tenéis?</summary>
+          <p>De lunes a viernes de 10:00 a 13:30 y de 17:30 a 20:30; los sábados de 10:00 a 13:30; los domingos cerramos. En verano puede cambiar: llámanos antes de venir.</p>
+        </details>
+      </div>
+    </section>
+
     <!-- Visítanos -->
     <section class="visita" id="visitanos" aria-labelledby="titulo-visita">
       <div class="visita-texto">
         <p class="etiqueta"><span class="etiqueta-punto" aria-hidden="true"></span>Visítanos</p>
         <h2 class="titulo titulo-grande" id="titulo-visita">Ven a verlo.</h2>
+        <p class="estado" data-estado hidden><span class="estado-punto" aria-hidden="true"></span><span data-estado-texto></span></p>
         <p class="visita-dir">Calle Nogalte, 7 · 30800 Lorca (Murcia)</p>
         <table class="horario">
           <caption>Horario</caption>
@@ -230,19 +381,31 @@
           <a class="boton" href="mailto:abcdeldescansolorca@yahoo.es">Escribir un email</a>
         </div>
       </div>
-      <figure class="foto visita-foto revela"><img src="img/tienda-almohadas.jpg" alt="Interior de ABC Descanso con almohadas, ropa de cama y el rótulo de la tienda" width="843" height="360" loading="lazy" decoding="async" /></figure>
+      <div class="visita-medios">
+        <figure class="foto visita-foto revela"><img src="img/tienda-almohadas.jpg" alt="Interior de ABC Descanso con almohadas, ropa de cama y el rótulo de la tienda" width="843" height="360" loading="lazy" decoding="async" /></figure>
+        <!-- El mapa de Google solo se carga si se pulsa (no pone cookies de terceros antes) -->
+        <div class="mapa revela" data-mapa>
+          <div class="mapa-portada">
+            <span class="mapa-pin" aria-hidden="true"></span>
+            <p class="mapa-dir">Calle Nogalte, 7 · Lorca</p>
+            <button type="button" class="boton" data-cargar-mapa>Ver el mapa aquí</button>
+            <p class="mapa-nota">Al pulsar se carga Google Maps, que usa sus propias cookies.</p>
+          </div>
+        </div>
+      </div>
     </section>
 
     <footer class="pie">
       <img class="pie-logo" src="img/logo-abcdescanso.png" alt="ABC Descanso, la tienda del descanso" width="592" height="385" loading="lazy" />
       <p class="pie-datos">Calle Nogalte, 7 · 30800 Lorca (Murcia) · <a href="tel:+34968479347">968 47 93 47</a></p>
       <p class="pie-datos pie-redes"><a href="https://www.instagram.com/abcdescansolorca/" rel="noopener" target="_blank">Instagram</a> · <a href="https://www.facebook.com/AbcDelDescansoLorca" rel="noopener" target="_blank">Facebook</a></p>
-      <!-- PENDIENTE: enlaces a aviso legal y privacidad cuando el propietario pase titular y NIF -->
+      <p class="pie-datos pie-legal"><a href="aviso-legal.html">Aviso legal</a> · <a href="privacidad.html">Privacidad</a> · <a href="cookies.html">Cookies</a></p>
     </footer>
   </main>
 
   <script src="js/gsap.min.js"></script>
   <script src="js/ScrollTrigger.min.js"></script>
+  <script src="js/lenis.min.js"></script>
   <script src="app.js"></script>
   <script type="module" src="render.js"></script>
 </body>

@@ -388,8 +388,12 @@ function iniciar() {
   // (compilar sombreadores en un móvil modesto), GSAP frena el tiempo y el lienzo se queda a medias.
   const intro = { v: reduce ? 1 : 0, t0: 0 };
   const DURA_INTRO = 1800, ESPERA_INTRO = 300;
+  // Espera a que se retire la pantalla de carga (app.js avisa con «abc:listo»); por si acaso, 4,5 s como mucho
+  let introLista = !document.querySelector(".cargador");
+  document.addEventListener("abc:listo", function () { introLista = true; });
+  setTimeout(function () { introLista = true; }, 4500);
   function avanzaIntro(ahora) {
-    if (intro.v >= 1) return;
+    if (intro.v >= 1 || !introLista) return;
     if (!intro.t0) intro.t0 = ahora + ESPERA_INTRO;
     const t = clamp((ahora - intro.t0) / DURA_INTRO, 0, 1);
     intro.v = 1 - Math.pow(1 - t, 3);   // power3.out
