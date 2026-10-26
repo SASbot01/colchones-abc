@@ -3,7 +3,7 @@
 Web estática (HTML + CSS + JS) para **ABC del Descanso** (ABC Colchones Lorca),
 colchonería en Calle Nogalte, 7, 30800 Lorca (Murcia). Tel. 968 47 93 47.
 
-Estética de referencia: **iyO One** (oscura, tipográfica, con producto despiezado).
+Estructura de referencia: **iyO One** (tipográfica, con producto despiezado); color claro al estilo **Kave Home**.
 Tipografías **Geist** y **Geist Mono** alojadas en local. Movimiento con **GSAP 3.12.5
 + ScrollTrigger** (local). Ondas de partículas en `<canvas>`. Render 3D del colchón sobre
 somier con **Three.js r165** (local, `js/three/`, cargado con import map) en `render.js`.
@@ -25,7 +25,8 @@ somier con **Three.js r165** (local, `js/three/`, cargado con import map) en `re
 - Página de Facebook «ABC Descanso LORCA»: logo (nube azul + «abcdescanso»), lema, fotos de la tienda.
 - Instagram @abcdescansolorca: productos (Karibian Descanso, canapé Koala con mando, muelle ensacado,
   colchón Eleva, colchas bouti, cojines, pijamas) y fotos de montajes en casa de clientes.
-- Colores: azul de la nube del logo (#0F5A9C → #1A86CC → #2FA6E4) sobre fondo oscuro.
+- Colores: fondo claro de estudio al estilo Kave Home (#F0EFEB, blanco, texto negro y gris oliva #53534C,
+  botón negro) con el azul de la nube del logo (#0F5A9C → #1A86CC → #2FA6E4) como acento.
 
 ## PENDIENTE de confirmar con el propietario
 - Catálogo y marcas vigentes (los posts de Karibian son de 2018–2024).

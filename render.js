@@ -134,7 +134,7 @@ function iniciar() {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, movil() ? 1.5 : 1.75));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
+  renderer.toneMappingExposure = 1.0;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.setClearColor(0x000000, 0);
@@ -142,7 +142,7 @@ function iniciar() {
   const escena = new THREE.Scene();
   const pmrem = new THREE.PMREMGenerator(renderer);
   escena.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
-  escena.environmentIntensity = 0.38;
+  escena.environmentIntensity = 0.75;
 
   const camara = new THREE.PerspectiveCamera(28, 1, 0.1, 60);
 
@@ -161,17 +161,17 @@ function iniciar() {
   const contra = new THREE.DirectionalLight(0xc8d2ff, 1.1);
   contra.position.set(3, 2.2, -3.5);
   escena.add(contra);
-  const azul = new THREE.PointLight(0x1a86cc, 2.6, 6, 2);
+  const azul = new THREE.PointLight(0x1a86cc, 1.0, 6, 2);
   azul.position.set(0, -0.4, 1.6);
   escena.add(azul);
 
   /* ---------------- materiales ---------------- */
   const matTejidoArriba = new THREE.MeshPhysicalMaterial({
-    color: 0xe9e4da, roughness: 0.92, sheen: 1, sheenRoughness: 0.55, sheenColor: 0xfff0dc,
+    color: 0xf3f1ec, roughness: 0.92, sheen: 1, sheenRoughness: 0.55, sheenColor: 0xfff0dc,
     bumpMap: textura(lienzoCapitone, 3, 4), bumpScale: 5
   });
   const matTejidoLado = new THREE.MeshPhysicalMaterial({
-    color: 0xd9d3c9, roughness: 0.95, sheen: 0.7, sheenRoughness: 0.6, sheenColor: 0xffffff,
+    color: 0xa8a69f, roughness: 0.95, sheen: 0.7, sheenRoughness: 0.6, sheenColor: 0xffffff,
     bumpMap: textura(lienzoTrama, 10, 1.2), bumpScale: 0.8
   });
   const matEspuma = new THREE.MeshStandardMaterial({
@@ -316,13 +316,13 @@ function iniciar() {
   const HUECO = 0.3;
 
   // suelo que solo recibe sombra + mancha de contacto
-  const suelo = new THREE.Mesh(new THREE.PlaneGeometry(8, 8), new THREE.ShadowMaterial({ opacity: 0.45 }));
+  const suelo = new THREE.Mesh(new THREE.PlaneGeometry(8, 8), new THREE.ShadowMaterial({ opacity: 0.18 }));
   suelo.rotation.x = -Math.PI / 2;
   suelo.receiveShadow = true;
   pieza.add(suelo);
   const mancha = new THREE.Mesh(
     new THREE.PlaneGeometry(ANCHO * 1.7, LARGO * 1.45),
-    new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(lienzoSombra), transparent: true, depthWrite: false })
+    new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(lienzoSombra), transparent: true, opacity: 0.45, depthWrite: false })
   );
   mancha.rotation.x = -Math.PI / 2;
   mancha.position.y = 0.002;
@@ -475,7 +475,7 @@ function iniciar() {
       porDentro.style.opacity = t.toFixed(3);
       porDentro.style.transform = `translateY(${((1 - t) * 18).toFixed(1)}px)`;
     }
-    if (escena2D) escena2D.style.opacity = (1 - 0.7 * tCam).toFixed(3);
+    if (escena2D) raiz.style.setProperty("--op-despiece", (1 - 0.6 * tCam).toFixed(3));
 
     renderer.render(escena, camara);
     colocaEtiquetas(p);
